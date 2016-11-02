@@ -16,8 +16,8 @@ byte sectorA[4] = {132,246,164,48};
 byte sectorF[4] = {148,134,221,245};
 void setup() 
 { 
-  pinMode(6, OUTPUT);
-  Serial.begin(9600);
+  pinMode(6, OUTPUT);     // Pin para el buzzer
+  Serial.begin(9600);    // Inicia Com
   SPI.begin();          //Inicia bus SPI
   rfid.PCD_Init();      // Inicia RFID
 
