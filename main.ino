@@ -9,6 +9,7 @@ MFRC522 rfid(SS_PIN, RST_PIN);
 MFRC522::MIFARE_Key key; 
 // Array vacio para guardar la key
 byte nuidPICC[3];
+// Tarjetas habilitadas
 byte tarjebus[4] = {84,143,13,153};
 byte ROOT[4] = {181,201,171,117};
 byte sectorA[4] = {132,246,164,48};
@@ -17,11 +18,12 @@ void setup()
 { 
   pinMode(6, OUTPUT);
   Serial.begin(9600);
-  SPI.begin();          // Init SPI bus
-  rfid.PCD_Init();      // Init MFRC522 
+  SPI.begin();          //Inicia bus SPI
+  rfid.PCD_Init();      // Inicia RFID
 
   for (byte i = 0; i < 6; i++) 
-    {  key.keyByte[i] = 0xFF;
+    { 
+     key.keyByte[i] = 0xFF;
     }
 
   Serial.println(F("Escaner Tarjetas 1.1 By Juan Blanc"));
@@ -33,16 +35,13 @@ void setup()
 void printHex(byte *buffer, byte bufferSize) {
   for (byte i = 0; i < bufferSize; i++) {
     Serial.print(buffer[i] < 0x10 ? " 0" : " ");
-    
-    Serial.print(buffer[i], HEX);
+      Serial.print(buffer[i], HEX);
   }
 }
 void printDec(byte *buffer, byte bufferSize) {
   for (byte i = 0; i < bufferSize; i++) {
-    //Serial.print(buffer[i] < 0x10 ? " 0" : " ");
-   
-    Serial.print(buffer[i]);
-    Serial.print(" ");
+  Serial.print(buffer[i] < 0x10 ? " 0" : " ");
+   Serial.print(buffer[i], DEC);
   }
 }
 //------------------------------------------------------------------
@@ -71,13 +70,13 @@ void loop() {
         Serial.println(F("Error."));
         return;
       }
-                        //Almacena los datos en el array...
+//Almacena los datos en el array...
   if (rfid.uid.uidByte[0] != nuidPICC[0] || 
     rfid.uid.uidByte[1] != nuidPICC[1] || 
     rfid.uid.uidByte[2] != nuidPICC[2] || 
     rfid.uid.uidByte[3] != nuidPICC[3] ) 
     {
-                     //si se guardo, detecto un tipo de tarjeta valido y prosige
+//si se guardo, detecto un tipo de tarjeta valido y prosige
        
          beep(200); // Beep para saber la lectura correcta
         if( acceso(rfid.uid.uidByte,rfid.uid.size,tarjebus) == 1 )
@@ -123,8 +122,7 @@ bool acceso(byte *buffer, byte tamanio_buf, byte *almacenada)
     {
       validacion++;
     }
-     
-    }
+      } //Fin for
     if(validacion == 4)
     {
       return 1;
